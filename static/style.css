@@ -17,14 +17,19 @@ body {
   color: #00FF7F;
   background: black;
   text-transform: uppercase;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
 }
 
 button {
   background: transparent;
-  border: 2px solid #00FF7F;
+  border: none;
+  outline: none;
   color: #00FF7F;
-  padding: 10px 20px;
-  font-size: 1.5em;
+  padding: 40px 80px;
+  font-size: 6em;
   cursor: pointer;
 }
 
