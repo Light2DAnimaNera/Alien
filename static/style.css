@@ -1,19 +1,13 @@
 @font-face {
-  font-family: 'Berthold City Light';
-  src: url('fonts/CityLightExtended-Regular.woff2') format('woff2');
+  font-family: 'CityLightExtended';
+  src: url('/static/fonts/CityLightExtended-Regular.woff2') format('woff2');
   font-weight: normal;
   font-style: normal;
-}
-
-@font-face {
-  font-family: 'City Mono Extended';
-  src: url('fonts/CityLightExtended-Regular.woff2') format('woff2');
-  font-weight: normal;
-  font-style: normal;
+  font-display: swap;
 }
 
 body {
-  font-family: 'Berthold City Light', 'City Mono Extended', monospace;
+  font-family: 'CityLightExtended', monospace;
   color: #00FF7F;
   background: black;
   text-transform: uppercase;
