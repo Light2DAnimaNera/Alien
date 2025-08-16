@@ -9,19 +9,21 @@
     <link rel="stylesheet" href="/src/styles/layout.css" />
   </head>
   <body>
-    <header class="app-header">
-      <h1>Weyland-Yutani Corp</h1>
-    </header>
+      <header class="app-header">
+        <h1>Weyland-Yutani Corp</h1>
+      </header>
 
-    <main class="app-main">
-      <div id="app-content" aria-live="polite"></div>
-    </main>
+      <div class="app-content-wrapper">
+        <main class="app-main">
+          <div id="app-content" aria-live="polite"></div>
+        </main>
 
-    <!-- Поле ввода кода перенесено над футером -->
-    <div id="controls"></div>
+        <!-- Поле ввода кода перенесено над футером -->
+        <div id="controls"></div>
+      </div>
 
-    <footer class="app-footer">WEYLAND·YUTANI // SECTOR: LV-426 // BUILD BETTER WORLDS</footer>
+      <footer class="app-footer">WEYLAND·YUTANI // SECTOR: LV-426 // BUILD BETTER WORLDS</footer>
 
-    <script type="module" src="/src/app.js"></script>
-  </body>
-</html>
+      <script type="module" src="/src/app.js"></script>
+    </body>
+  </html>
