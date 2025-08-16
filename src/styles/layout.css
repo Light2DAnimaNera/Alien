@@ -1,0 +1,328 @@
+/* === ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ === */
+:root {
+  /* === ПЕРЕМЕННЫЕ ДЛЯ ГЛОБАЛЬНОГО ГЛИЧА === */
+  --rgb-shift-x: 2px;   /* горизонтальное смещение каналов */
+  --rgb-shift-y: 1px;   /* вертикальное смещение каналов */
+  --jitter: 1px;        /* амплитуда дрожания */
+  --jitter-speed: 90ms; /* скорость дрожания */
+  --noise-opacity: .20; /* прозрачность шума */
+  --scan-opacity: .08;  /* прозрачность скан-линий */
+
+  --size: 450px;        /* единая "ручка" масштаба */
+  --stroke: 2;          /* базовая толщина линий */
+  --green: rgba(0, 255, 102, 1);         /* базовый зелёный контур */
+  --green-fill: rgba(0, 255, 102, 0.20); /* полупрозрачная зелёная заливка */
+  --red: #ff4040;       /* красный для угрозы */
+  --glow-soft: 4px;     /* мягкое свечение */
+  --glow-strong: 12px;  /* усиленное свечение */
+  --dot-r: 2.6;         /* радиус точек */
+}
+
+/* ─── Центровка header/footer ─── */
+.app-header,
+.app-footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 16px;
+  border-color: rgba(0, 255, 102, 0.3);
+  background: rgba(0, 32, 0, 0.85);
+  box-shadow: 0 0 6px rgba(0, 255, 102, 0.3);
+}
+.app-header { border-bottom: 1px solid rgba(0, 255, 102, 0.3); }
+.app-footer { border-top: 1px solid rgba(0, 255, 102, 0.3); }
+
+/* ─── Разметка страницы: header | main | controls | footer ─── */
+html, body { height: 100%; }
+body {
+  min-height: 100vh;
+  margin: 0;
+  display: grid;
+  grid-template-rows: auto 1fr auto auto; /* header, main(растёт), controls, footer */
+}
+
+/* Контент */
+.app-main {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+/* ─── Controls над футером (в потоке, по центру) ─── */
+#controls {
+  display: flex;
+  justify-content: center;
+  padding: 16px 0;
+  margin: 0;
+  position: static;
+  transform: none;
+  left: auto; bottom: auto;
+}
+
+/* Панель с вводом кода (CRT-стиль) */
+.controls-row {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: 14px;
+  background: rgba(0, 32, 0, 0.7);
+  box-shadow:
+    0 0 6px rgba(0, 255, 102, 0.35),
+    inset 0 0 10px rgba(0, 255, 102, 0.15);
+  backdrop-filter: blur(2px);
+}
+
+/* Инпут и кнопки */
+.code-input input {
+  padding: 10px 12px;
+  min-width: 200px;
+  border-radius: 10px;
+  border: 1px solid rgba(0, 255, 102, 0.45);
+  background: #000;
+  color: var(--fg);
+  outline: none;
+  text-shadow: 0 0 4px var(--fg);
+}
+.code-input input::placeholder { color: var(--muted); }
+
+.code-input button,
+.install-btn {
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(0, 255, 102, 0.6);
+  background: #001a00;
+  color: var(--fg);
+  cursor: pointer;
+  box-shadow: 0 0 6px rgba(0,255,102,.35);
+}
+.code-input button:active { transform: translateY(1px); }
+.install-btn:disabled { opacity: .6; cursor: default; }
+
+.install-tip { font-size: 14px; color: var(--muted); }
+.install-tip.highlight { animation: tipflash .8s ease; }
+@keyframes tipflash {
+  0% { background: transparent; }
+  30% { background: rgba(0, 255, 102, .3); }
+  100% { background: transparent; }
+}
+
+/* ─── Стартовая страница ─── */
+.start-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 120px);
+  text-align: center;
+  background: #000;
+  position: relative;
+  overflow: hidden;
+}
+.start-page::after {
+  content: none;
+  position: absolute; inset: 0;
+  background: repeating-linear-gradient(
+    rgba(0, 255, 102, 0.05) 0px,
+    rgba(0, 255, 102, 0.05) 1px,
+    transparent 2px
+  );
+  pointer-events: none;
+}
+.logo {
+  color: var(--fg);
+  text-shadow: 0 0 8px var(--fg);
+  margin-bottom: 40px;
+  animation: flicker 2s infinite;
+}
+.logo.small { font-size: 1.1rem; margin-bottom: 20px; }
+@keyframes flicker {
+  0%,19%,21%,23%,25%,54%,56%,100% { opacity: 1; }
+  20%,24%,55% { opacity: .55; }
+}
+.start-button {
+  font-size: 2rem;
+  padding: 20px 40px;
+  border: 2px solid var(--fg);
+  background: rgba(0, 20, 0, 0.85);
+  color: var(--fg);
+  text-transform: uppercase;
+  letter-spacing: 4px;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 0 10px var(--fg), inset 0 0 5px rgba(0, 255, 102, 0.4);
+  text-shadow: 0 0 8px var(--fg);
+  transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
+}
+.start-button:hover {
+  background: rgba(0, 40, 0, 0.9);
+  box-shadow: 0 0 20px var(--fg), inset 0 0 10px rgba(0, 255, 102, 0.6);
+}
+.start-button:active { transform: scale(0.98); }
+
+/* ─── Экран ввода кода (отдельный экран после START) ─── */
+.code-screen {
+  min-height: calc(100vh - 120px);
+  display: grid;
+  place-items: center;
+  gap: 16px;
+  text-align: center;
+}
+.code-screen .code-input {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px; /* отступы между надписью, полем и кнопкой */
+}
+
+/* Ошибка доступа на экране ввода */
+.code-screen .code-input label.denied {
+  color: #ff3b3b;
+  text-shadow: 0 0 6px #ff3b3b;
+}
+
+/* Медиа-блоки на страницах */
+.page figure {
+  margin: 16px auto;
+  max-width: min(960px, 92vw);
+  text-align: center; /* центрируем только картинку */
+}
+.page figure img {
+  width: 40%; /* оставлено как в вашем текущем файле */
+  height: auto;
+  display: block;
+  margin: 0 auto 8px;
+  border: 1px solid var(--fg);
+  box-shadow: 0 0 10px rgba(0,255,102,.35);
+  background: #000;
+}
+.page figure figcaption {
+  font-size: 14px;
+  color: var(--muted);
+  text-shadow: 0 0 4px var(--muted);
+  text-align: left;          /* выравнивание по левому краю */
+  line-height: 1.4;
+}
+
+/* Масштаб и отступ для SVG-схем */
+.wrap {
+  width: 100%;
+  margin: 0 auto 10px auto; /* 10px снизу по вашей правке */
+}
+svg {
+  width: calc(var(--size) * 1px);
+  height: calc(var(--size) * 1px);
+  display: block;
+}
+
+/* === ОБЩИЙ СТИЛЬ КОНТУРОВ — #1 (толщина линии) === */
+.s1-line {
+  fill: none;
+  stroke-width: var(--stroke);
+  vector-effect: non-scaling-stroke; /* толщина не меняется при масштабировании */
+}
+/* === СТИЛЬ #2: мягкое зелёное свечение === */
+.s2-default {
+  stroke: var(--green);
+  filter: drop-shadow(0 0 var(--glow-soft) var(--green));
+}
+/* === СТИЛЬ #3: активная комната с пульсацией === */
+.s3-active {
+  stroke: var(--green);
+  fill: var(--green-fill);
+  filter: drop-shadow(0 0 var(--glow-strong) var(--green));
+  animation: pulseActive 1s ease-in-out infinite alternate;
+}
+@keyframes pulseActive {
+  0% {
+    filter: drop-shadow(0 0 var(--glow-soft) var(--green));
+    fill-opacity: 0.10;
+  }
+  100% {
+    filter: drop-shadow(0 0 var(--glow-strong) var(--green));
+    fill-opacity: 1;
+  }
+}
+/* === СТИЛЬ #5: скрытая комната === */
+.s5-hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+/* === СТИЛЬ #6: комната с угрозой === */
+.s6-threat {
+  stroke: var(--red);
+  filter: drop-shadow(0 0 var(--glow-soft) var(--red));
+}
+/* Закрашенная зелёная точка */
+.dot-place {
+  stroke: var(--green);
+  fill: var(--green);
+  filter: drop-shadow(0 0 var(--glow-soft) var(--green));
+}
+/* Незакрашенная зелёная точка */
+.dot-way {
+  stroke: var(--green);
+  filter: drop-shadow(0 0 var(--glow-soft) var(--green));
+}
+
+/* === ГЛОБАЛЬНЫЙ ГЛИЧ-ЭФФЕКТ (по новой схеме) === */
+/* Эффект включается только там, где корневому контейнеру добавлен класс .glitch-animate */
+.glitch-animate {
+  animation: jitter var(--jitter-speed) infinite steps(2, end);
+  filter: url(#rgbSplit); /* RGB-смещение через SVG-фильтр */
+}
+/* Дрожание */
+@keyframes jitter {
+  0%   { transform: translate(calc(var(--jitter) * -1), calc(var(--jitter) * -1)); }
+  50%  { transform: translate(calc(var(--jitter) *  1), calc(var(--jitter) *  1)); }
+  100% { transform: translate(0, 0); }
+}
+/* Скан-линии */
+.glitch-animate::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(255,255,255,0) 0px,
+    rgba(255,255,255,0) 2px,
+    rgba(255,255,255,1) 3px
+  );
+  opacity: var(--scan-opacity);
+  mix-blend-mode: overlay;
+  animation: scanShift 2.2s linear infinite;
+}
+@keyframes scanShift {
+  0%   { transform: translateY(0); }
+  100% { transform: translateY(3px); }
+}
+/* Шумовое покрытие */
+.glitch-animate::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  background-image: url('data:image/svg+xml;utf8,\
+    <svg xmlns="http://www.w3.org/2000/svg" width="200" height="200">\
+      <filter id="n">\
+        <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="3">\
+          <animate attributeName="seed" values="1;2;3;4;5;6" dur="1s" repeatCount="indefinite"/>\
+        </feTurbulence>\
+        <feColorMatrix type="saturate" values="0"/>\
+      </filter>\
+      <rect width="100%" height="100%" filter="url(#n)" fill="none"/>\
+    </svg>');
+  background-size: 200px 200px;
+  opacity: var(--noise-opacity);
+  mix-blend-mode: overlay;
+  animation: noiseShift 0.35s steps(2, end) infinite;
+}
+@keyframes noiseShift {
+  50% { background-position: 0 0; }
+  100%{ background-position: 100px 100px; }
+}

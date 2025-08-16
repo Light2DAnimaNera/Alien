@@ -1,0 +1,59 @@
+/* Подключаем кастомный шрифт (если есть) */
+@font-face {
+  font-family: 'Berthold City Light';
+  src: url('../assets/fonts/BertholdCityLight.woff2') format('woff2'),
+       url('../assets/fonts/BertholdCityLight.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Базовые стили в стиле CRT */
+:root {
+  --bg: #000000;           /* Чёрный фон */
+  --fg: #00ff66;           /* Неоново-зелёный текст */
+  --muted: #00cc55;        /* Приглушённый зелёный */
+  --accent: #00ff66;       /* Акцент */
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #000000;
+    --fg: #00ff66;
+    --muted: #00cc55;
+    --accent: #00ff66;
+    color-scheme: dark;
+  }
+}
+
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; }
+
+/* Применяем шрифт и зелёное свечение ко всему тексту */
+body {
+  font: 16px/1.5 'Berthold City Light', monospace;
+  background: var(--bg);
+  color: var(--fg);
+  -webkit-font-smoothing: none; /* Чтобы выглядело “пиксельно” */
+  text-rendering: optimizeSpeed;
+  text-shadow: 0 0 4px var(--fg), 0 0 8px var(--fg);
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+  text-shadow: 0 0 4px var(--accent), 0 0 8px var(--accent);
+}
+a:hover { text-decoration: underline; }
+
+/* Для заголовков — чуть сильнее свечение */
+h1, h2, h3 {
+  text-shadow: 0 0 6px var(--fg), 0 0 12px var(--fg);
+}
+
+/* Приглушённый текст */
+.muted {
+  color: var(--muted);
+  text-shadow: 0 0 3px var(--muted);
+}
