@@ -1,6 +1,29 @@
 // src/pages/page-c.js — страница C: добавлен звук сирены (Web Audio API, бесшовный луп)
 let ctx, gain, buffer, source;
 
+// --- FIX: защита от «подвисшей» сирены и наложений ---
+let __c_teardown = [];
+function bindGlobalCleanup() {
+  if (__c_teardown.length) return; // уже привязано
+  const onHashChange = () => stopSiren();
+  const onPageHide = () => stopSiren();
+  const onBeforeUnload = () => stopSiren();
+  window.addEventListener('hashchange', onHashChange);
+  window.addEventListener('pagehide', onPageHide);
+  window.addEventListener('beforeunload', onBeforeUnload);
+  __c_teardown = [
+    ['hashchange', onHashChange],
+    ['pagehide', onPageHide],
+    ['beforeunload', onBeforeUnload],
+  ];
+}
+function unbindGlobalCleanup() {
+  __c_teardown.forEach(([type, handler]) => {
+    try { window.removeEventListener(type, handler) } catch {}
+  });
+  __c_teardown = [];
+}
+
 /** Создаёт/возвращает AudioContext и GainNode */
 function getCtx() {
   if (!ctx) {
@@ -43,6 +66,9 @@ async function loadBuffer() {
 
 /** Запуск сирены: бесшовный луп + плавный fade-in */
 async function startSiren() {
+  // FIX: перед запуском — глушим возможный предыдущий источник
+  stopSiren();
+
   const c = getCtx();
   await ensureInteraction();                 // разблокируем аудио, если нужно
   const buf = await loadBuffer();
@@ -82,6 +108,9 @@ function stopSiren() {
 
 // src/pages/page-c.js — SVG-схема вместо картинки, текст сохранён
 export async function render(container) {
+  // FIX: страховка при повторном заходе — остановим прежний звук
+  stopSiren();
+
   const el = document.createElement('section');
   el.className = 'page';
   el.innerHTML = `
@@ -112,7 +141,7 @@ export async function render(container) {
 
           <!-- Точки (радиус задаётся стилями: var(--dot-r)) -->
           <circle class="s1-line dot-place" cx="20"  cy="130" r="2.6" />
-          <circle class="s1-line dot-way" cx="59"  cy="110" r="2.6" />
+          <circle class="s1-line dot-way"   cx="59"  cy="110" r="2.6" />
         </svg>
       </div>
 
@@ -130,6 +159,8 @@ export async function render(container) {
   container.appendChild(el);
 
   // === СТАРТ СИРЕНЫ ПО ВХОДУ НА page-c ===
+  // FIX: подписка на глобальные события для гарантированной остановки при уходе
+  bindGlobalCleanup();
   startSiren().catch(() => {
     // Если автоплей заблокирован — звук включится при первом клике/клавише (ensureInteraction ставит слушатели)
   });
@@ -138,4 +169,7 @@ export async function render(container) {
 // При уходе со страницы (роутер вызывает destroy) — аккуратно глушим сирену
 export function destroy() {
   stopSiren();
+
+  // FIX: снимаем глобальные подписки
+  unbindGlobalCleanup();
 }

@@ -1,0 +1,9 @@
+/* src/styles/access-denied.css */
+/* Универсальная подсветка ACCESS DENIED для всех форм с классом .code-input */
+
+.code-input label.denied {
+  color: #ff3b3b;
+  text-shadow: 0 0 6px #ff3b3b;
+  letter-spacing: 0.06em;
+  transition: color 120ms ease, text-shadow 120ms ease;
+}

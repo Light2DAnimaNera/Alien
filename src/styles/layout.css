@@ -208,7 +208,7 @@ body {
 
 /* Масштаб и отступ для SVG-схем */
 .wrap {
-  width: 100%;
+  width: 50%;
   margin: 0 auto 10px auto; /* 10px снизу по вашей правке */
 }
 svg {
@@ -291,7 +291,7 @@ svg {
     rgba(255,255,255,0) 0px,
     rgba(255,255,255,0) 2px,
     rgba(255,255,255,1) 3px
-  );
+  );  
   opacity: var(--scan-opacity);
   mix-blend-mode: overlay;
   animation: scanShift 2.2s linear infinite;
