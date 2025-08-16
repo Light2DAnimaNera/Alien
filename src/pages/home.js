@@ -40,8 +40,6 @@ function showCodeScreen(container) {
       if (!isKnownCode(val)) {
         labelEl.textContent = 'ACCESS DENIED';
         labelEl.classList.add('denied');
-        // очистим/выделим ввод для повторного ввода
-        inputEl.select?.();
         return;
       }
 
@@ -53,12 +51,9 @@ function showCodeScreen(container) {
   });
   mount.appendChild(form);
 
-  // автофокус в поле ввода
   const inputEl = form.querySelector('input');
   const labelEl = form.querySelector('label');
   const defaultLabel = 'Введите код';
-
-  inputEl?.focus({ preventScroll: true });
 
   // при любом вводе — снимаем статус ошибки и возвращаем исходный текст
   inputEl?.addEventListener('input', () => {
